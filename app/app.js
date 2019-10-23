@@ -20,7 +20,7 @@ client.on('presenceUpdate', (oldMember, newMember) => {
 
 // On member join welcome message
 client.on('guildMemberAdd', (member) => {
-    const ch = client.channels.some(c => c.id === config.channel.welcome);
+    const ch = client.channels.find('id', config.channel.welcome)
     ch.send({
         embed: {
             color: 0xff6c00,
@@ -39,7 +39,7 @@ client.on('guildMemberAdd', (member) => {
 
 // On member leave welcome message
 client.on('guildMemberRemove', (member) => {
-    const ch = client.channels.some(c => c.id === config.channel.welcome);
+    const ch = client.channels.find('id', config.channel.welcome)
     ch.send({
         embed: {
             color: 0xff6c00,
