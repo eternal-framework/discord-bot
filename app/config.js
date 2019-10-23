@@ -8,6 +8,7 @@ module.exports = {
         // Discord bot token
         discord: process.env.DISCORD_TOKEN
     },
+    guildId: '635853168688758804',
     role: {
         member: {
             name: 'Member',

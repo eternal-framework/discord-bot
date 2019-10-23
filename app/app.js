@@ -2,8 +2,9 @@ const Discord = require('discord.js');
 const config = require('./config');
 const { log } = require('./common');
 const commands = require('./commands');
+const { subscribe, unsubscribe } = require('./roles');
 
-const client = new Discord.Client();
+global.client = new Discord.Client();
 
 client.on('error', log.error);
 client.login(config.tokens.discord)
@@ -19,7 +20,7 @@ client.on('presenceUpdate', (oldMember, newMember) => {
 
 // On member join welcome message
 client.on('guildMemberAdd', (member) => {
-    const ch = client.channels.find('id', config.channel.welcome)
+    const ch = client.channels.some(c => c.id === config.channel.welcome);
     ch.send({
         embed: {
             color: 0xff6c00,
@@ -30,7 +31,7 @@ client.on('guildMemberAdd', (member) => {
             title: "Welcome to Eternal Framework.",
             description: "" + member + ", thank you for joining! Feel free to ask any questions in #help.",
             thumbnail: {
-                url: config.iconImageUrl
+                url: config.iconUrl
             }
         }
     })
@@ -38,7 +39,7 @@ client.on('guildMemberAdd', (member) => {
 
 // On member leave welcome message
 client.on('guildMemberRemove', (member) => {
-    const ch = client.channels.find('id', config.channel.welcome)
+    const ch = client.channels.some(c => c.id === config.channel.welcome);
     ch.send({
         embed: {
             color: 0xff6c00,
@@ -67,4 +68,18 @@ client.on('message', message => {
    log.info('Received command: ', command, args);
 
    commands(message, command, args);
+});
+
+// Check for subscribe options.
+client.on('messageReactionAdd', (reaction, user) => {
+   if(reaction.emoji.name === '✅' && !user.bot) {
+       subscribe(reaction, user)
+   }
+});
+
+// Check for unsubscribe options.
+client.on('messageReactionRemove', (reaction, user) => {
+    if(reaction.emoji.name === '✅' && !user.bot) {
+        unsubscribe(reaction, user)
+    }
 });

@@ -1,4 +1,5 @@
 const { createEmbed, isDeveloper } = require('./common');
+const { sendRolesMessage } = require('./roles');
 
 function removeCommandMessage(message) {
     message.delete();
@@ -6,7 +7,6 @@ function removeCommandMessage(message) {
 
 module.exports = (message, command, args) => {
     const value = args.join(' ');
-
     switch (command) {
         case 'help':
             const helpEmbed = createEmbed()
@@ -24,6 +24,13 @@ module.exports = (message, command, args) => {
                 embed: helpEmbed
             });
 
+            removeCommandMessage(message);
+        break;
+        case 'send-roles-msg':
+            if(!isDeveloper(message.member)) {
+                return
+            }
+            sendRolesMessage();
             removeCommandMessage(message);
         break;
         default:
